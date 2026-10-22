@@ -24,8 +24,11 @@ stateDiagram-v2
   [*] --> ADMITTED
   ADMITTED --> DENIED: egress fails
   ADMITTED --> PLANNED: local images and pack path pass
-  PLANNED --> PLANNED: reconcile again
+  PLANNED --> PLANNED: upgrade
+  PLANNED --> DELETED: finalizer
 ```
+
+The Go controller in `operator/` owns the Kubernetes-shaped reconcile loop, the finalizer, and the JSON journal. The Python API owns the Airflow-shaped routes, the pack scan, and the SQLite journal. See [one-pager.md](one-pager.md), [installation.md](installation.md), [configuration.md](configuration.md), and [recovery.md](recovery.md).
 
 `Ready` stays false. The phase names above are the ones the reconciler writes. A planned cluster is not a running cluster.
 

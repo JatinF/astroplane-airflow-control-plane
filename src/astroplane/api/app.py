@@ -7,6 +7,8 @@ Airflow's own OpenAPI does not include that parameter.
 
 from __future__ import annotations
 
+import os
+
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, ConfigDict
@@ -21,13 +23,18 @@ from astroplane.compat.airflow_api import (
 from astroplane.governance.auth import PlatformStore
 from astroplane.observe.metrics import render_metrics
 from astroplane.supply.pack import manifest
-from astroplane.workflow import install, read_audit, read_cluster
+from astroplane.workflow import delete, install, open_store, read_audit, read_cluster, upgrade
 
 SCHEDULER_DETAIL = "scheduler process is not-run"
 
 
 class InstallBody(BaseModel):
     model_config = ConfigDict(extra="forbid")
+
+
+class UpgradeBody(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    release: str
 
 
 class DagRunBody(BaseModel):
@@ -41,7 +48,10 @@ class DagRunBody(BaseModel):
 
 def create_app(store: PlatformStore | None = None) -> FastAPI:
     app = FastAPI(title="AstroPlane", version="0.1.0")
-    app.state.store = store or PlatformStore()
+    if store is None:
+        state_path = os.environ.get("ASTROPLANE_STATE")
+        store = open_store(state_path) if state_path else PlatformStore()
+    app.state.store = store
 
     def principal_from(request: Request) -> dict:
         header = request.headers.get("authorization", "")
@@ -58,6 +68,8 @@ def create_app(store: PlatformStore | None = None) -> FastAPI:
             raise HTTPException(status_code=403, detail=str(exc)) from exc
         except LookupError as exc:
             raise HTTPException(status_code=404, detail=str(exc)) from exc
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     def require_cluster_id(cluster_id: str | None) -> str:
         if not cluster_id:
@@ -184,6 +196,35 @@ def create_app(store: PlatformStore | None = None) -> FastAPI:
             "components_running": int(app.state.store.metrics["components_running"]),
             "egress_allowed": cluster["egress"]["allowed"],
             "reasons": cluster["egress"]["reasons"],
+        }
+
+    @app.post("/v1/clusters/{cluster_id}/upgrade")
+    def upgrade_cluster(cluster_id: str, body: UpgradeBody, request: Request) -> dict:
+        principal = principal_from(request)
+        result = call(lambda: upgrade(app.state.store, principal, cluster_id, body.release))
+        cluster = result["cluster"]
+        return {
+            "cluster_id": cluster["cluster_id"],
+            "phase": cluster["phase"],
+            "applied": False,
+            "release": cluster["release"],
+            "generation": cluster["generation"],
+            "audit_id": result["audit"]["audit_id"],
+            "deployment_count": len(cluster["deployments"]),
+            "components_running": int(app.state.store.metrics["components_running"]),
+        }
+
+    @app.delete("/v1/clusters/{cluster_id}")
+    def delete_cluster(cluster_id: str, request: Request) -> dict:
+        principal = principal_from(request)
+        result = call(lambda: delete(app.state.store, principal, cluster_id))
+        return {
+            "cluster_id": result["cluster_id"],
+            "phase": result["phase"],
+            "applied": False,
+            "finalizer_completed": result["finalizer_completed"],
+            "audit_id": result["audit"]["audit_id"],
+            "components_running": int(app.state.store.metrics["components_running"]),
         }
 
     @app.get("/v1/clusters/{cluster_id}")

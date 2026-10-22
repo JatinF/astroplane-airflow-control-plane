@@ -4,8 +4,8 @@ Evidence class: MEASURED. Decision: NO-GO.
 
 40 in-process installs of syn-cluster-01. One denied install of syn-cluster-egress is excluded from the percentile sample.
 
-P50 1.8802 ms, P95 2.8368 ms.
-Denied install latency 1.8236 ms is outside the percentile sample.
+P50 5.8009 ms, P95 12.9726 ms.
+Denied install latency 13.0978 ms is outside the percentile sample.
 Machine: Windows-11-10.0.26200-SP0. Processor: Intel64 Family 6 Model 140 Stepping 1, GenuineIntel. cpu_count 8. Python 3.12.10.
 
 After the planned sample, phase Planned, deployments 6, components_running 0, accepted DAGs ['SYN-DAG-ETL'].

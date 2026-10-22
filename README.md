@@ -34,16 +34,27 @@ stateDiagram-v2
   [*] --> ADMITTED
   ADMITTED --> DENIED: egress fails
   ADMITTED --> PLANNED: local images and pack path pass
-  PLANNED --> PLANNED: reconcile again
+  PLANNED --> PLANNED: upgrade
+  PLANNED --> DELETED: finalizer
 ```
 
-Ready stays false. Planned is the admitted phase. Denied stores no deployments. Details are in [docs/architecture.md](docs/architecture.md).
+Ready stays false. Planned is the admitted phase. Denied stores no deployments. The one-pager is [docs/one-pager.md](docs/one-pager.md).
+
+## What the controller and API tests cover
+
+The Go module in `operator/` is a standard-library controller. `go test -race ./...` provisions an `AirflowCluster`, writes six Pending Deployments, upgrades the local image tag to release `r2`, and runs the finalizer `astroplane.example/finalizer`. A second process opens the same JSON journal and finishes a deletion that the first process only marked. `TestTwoTrimpathBuildsMatch` builds `astroplane-controller` twice with `-trimpath` and requires the same sha256. CI runs that package with `GOPROXY=off`.
+
+The Python API keeps the Airflow-shaped routes and adds SQLite state, `POST /v1/clusters/{id}/upgrade`, and `DELETE /v1/clusters/{id}`. `tests/test_lifecycle.py` reopens the SQLite file in a new store and finishes a deletion that was saved as `Deleting`.
+
+Installation, configuration, and recovery procedures are in [docs/installation.md](docs/installation.md), [docs/configuration.md](docs/configuration.md), and [docs/recovery.md](docs/recovery.md).
+
+The CRD at `infrastructure/crds/airflowcluster.yaml` is still an unapplied sketch. The egress check is still an in-process spec check. `zero-egress-network-namespace` stays not-run. Health stays unhealthy, and creating a DAG run still returns 503 because the scheduler process is not-run.
 
 ## Measured install latency
 
 The sample is 40 in-process installs of `syn-cluster-01` on this workstation. One denied install of `syn-cluster-egress` is outside the percentile sample. The percentile is nearest-rank. Evidence class MEASURED. Cost: no price applied.
 
-Measured install latency on this workstation over 40 planned installs: P50 1.8802 ms, P95 2.8368 ms. The separate denied install took 1.8236 ms and is not part of that percentile.
+Measured install latency on this workstation over 40 planned installs: P50 5.8009 ms, P95 12.9726 ms. The separate denied install took 13.0978 ms and is not part of that percentile.
 
 Machine: Windows-11-10.0.26200-SP0. Processor: Intel64 Family 6 Model 140 Stepping 1, GenuineIntel. cpu_count 8. Python 3.12.10.
 

@@ -1,0 +1,31 @@
+{
+  "apiVersion": "astroplane.example/v1",
+  "kind": "AirflowCluster",
+  "metadata": {
+    "name": "syn-cluster-01",
+    "namespace": "astroplane"
+  },
+  "spec": {
+    "tenant": "tenant-a",
+    "airflowVersion": "2.11.0",
+    "executor": "LocalExecutor",
+    "offlineDagPack": "datasets/offline/dags",
+    "egress": {
+      "mode": "deny-all",
+      "allow": []
+    },
+    "images": {
+      "airflow": "registry.local/astroplane/airflow:2.11.0",
+      "postgres": "registry.local/astroplane/postgres:16",
+      "statsd": "registry.local/astroplane/statsd:local"
+    },
+    "components": {
+      "scheduler": {"replicas": 1},
+      "webserver": {"replicas": 1},
+      "dagProcessor": {"replicas": 1},
+      "triggerer": {"replicas": 1},
+      "metadata": {"replicas": 1},
+      "statsd": {"replicas": 1}
+    }
+  }
+}
