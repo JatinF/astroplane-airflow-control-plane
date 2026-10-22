@@ -1,0 +1,109 @@
+{
+  "evidence_class": "MEASURED",
+  "decision": "NO-GO",
+  "cost": "no price applied",
+  "scenario": "40 in-process installs of syn-cluster-01. One denied install of syn-cluster-egress is excluded from the percentile sample.",
+  "sample_size": 40,
+  "install_latency_ms": [
+    2.723700017668307,
+    4.076800076290965,
+    2.354899886995554,
+    1.7948000459000468,
+    1.8544000340625644,
+    1.8425999442115426,
+    2.0831000292673707,
+    1.8100000452250242,
+    2.836800063960254,
+    2.1226999815553427,
+    1.8342999974265695,
+    1.7791000427678227,
+    1.7864999826997519,
+    1.8735999474301934,
+    2.9155000811442733,
+    1.8175001023337245,
+    2.2074999287724495,
+    2.011400065384805,
+    1.8209998961538076,
+    1.8029001075774431,
+    1.8115000566467643,
+    2.8213999466970563,
+    2.1608000388368964,
+    1.9078999757766724,
+    2.4287999840453267,
+    1.9703999860212207,
+    1.841300050728023,
+    1.7541999695822597,
+    1.8968000076711178,
+    1.8182999920099974,
+    1.8906000768765807,
+    1.8927999772131443,
+    2.1564000053331256,
+    2.449199906550348,
+    1.8801999976858497,
+    1.7849000869318843,
+    2.0161999855190516,
+    1.7602000152692199,
+    1.8322999821975827,
+    1.8726999405771494
+  ],
+  "p50_ms": 1.8802,
+  "p95_ms": 2.8368,
+  "denied_install_ms": 1.8236,
+  "denied_in_percentile_sample": false,
+  "after_planned_sample": {
+    "phase": "Planned",
+    "applied": false,
+    "deployment_count": 6,
+    "deployment_phases": [
+      "Pending"
+    ],
+    "ready_replicas": 0,
+    "accepted_dag_ids": [
+      "SYN-DAG-ETL"
+    ],
+    "import_error_filenames": [
+      "datasets/offline/dags/syn_dag_leak.py"
+    ],
+    "components_desired": 6,
+    "components_running": 0,
+    "dags_accepted": 1,
+    "import_errors": 1,
+    "reconcile_planned": 40,
+    "reconcile_denied": 0,
+    "egress_denied": 0
+  },
+  "after_denied_install": {
+    "phase": "Denied",
+    "applied": false,
+    "deployment_count": 0,
+    "reasons": [
+      "image-registry:airflow"
+    ],
+    "components_desired": 6,
+    "components_running": 0,
+    "dags_accepted": 2,
+    "import_errors": 2,
+    "reconcile_planned": 40,
+    "reconcile_denied": 1,
+    "egress_denied": 1
+  },
+  "airflow_distribution": "not-installed",
+  "images_pulled": false,
+  "wheelhouse": "not-vendored",
+  "machine": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+    "cpu_count": 8,
+    "python": "3.12.10"
+  },
+  "gates": {
+    "kube-apiserver": "not-run",
+    "kind-cluster": "not-run",
+    "helm": "not-run",
+    "airflow-scheduler-process": "not-run",
+    "image-pull": "not-run",
+    "postgres": "not-run",
+    "zero-egress-network-namespace": "not-run",
+    "wheelhouse-vendoring": "not-run"
+  }
+}

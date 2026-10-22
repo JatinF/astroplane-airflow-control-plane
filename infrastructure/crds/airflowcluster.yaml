@@ -1,0 +1,46 @@
+# Unapplied sketch. This file was not posted to a Kubernetes API server.
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: airflowclusters.astroplane.example
+spec:
+  group: astroplane.example
+  scope: Namespaced
+  names:
+    kind: AirflowCluster
+    plural: airflowclusters
+    singular: airflowcluster
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                tenant:
+                  type: string
+                airflowVersion:
+                  type: string
+                executor:
+                  type: string
+                offlineDagPack:
+                  type: string
+                egress:
+                  type: object
+                images:
+                  type: object
+                components:
+                  type: object
+            status:
+              type: object
+      additionalPrinterColumns:
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Applied
+          type: string
+          jsonPath: .status.applied

@@ -1,0 +1,20 @@
+# Not started. Every service is behind a profile, so a bare
+# `docker compose up` starts nothing. Image names point at
+# registry.local and were not pulled. local-demo-only is a fixture
+# password for a database that was not created.
+services:
+  control-plane:
+    image: registry.local/astroplane/control-plane:local
+    profiles: ["app"]
+    ports:
+      - "127.0.0.1:8080:8080"
+  metadata:
+    image: registry.local/astroplane/postgres:16
+    profiles: ["app"]
+    environment:
+      POSTGRES_USER: astroplane
+      POSTGRES_PASSWORD: local-demo-only
+      POSTGRES_DB: airflow
+  grafana:
+    image: registry.local/astroplane/grafana:local
+    profiles: ["observe"]

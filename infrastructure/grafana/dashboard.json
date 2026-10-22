@@ -1,0 +1,47 @@
+{
+  "title": "AstroPlane control plane",
+  "uid": "astroplane-control-plane",
+  "description": "Panel names match the process metrics. This dashboard has not been imported.",
+  "editable": false,
+  "timezone": "utc",
+  "schemaVersion": 39,
+  "version": 1,
+  "panels": [
+    {
+      "id": 1,
+      "title": "astroplane_reconcile_total",
+      "type": "timeseries",
+      "targets": [{ "expr": "astroplane_reconcile_total", "refId": "A" }]
+    },
+    {
+      "id": 2,
+      "title": "astroplane_egress_denied_total",
+      "type": "stat",
+      "targets": [{ "expr": "astroplane_egress_denied_total", "refId": "A" }]
+    },
+    {
+      "id": 3,
+      "title": "astroplane_components_desired",
+      "type": "stat",
+      "targets": [{ "expr": "astroplane_components_desired", "refId": "A" }]
+    },
+    {
+      "id": 4,
+      "title": "astroplane_components_running",
+      "type": "stat",
+      "targets": [{ "expr": "astroplane_components_running", "refId": "A" }]
+    },
+    {
+      "id": 5,
+      "title": "astroplane_dags_accepted",
+      "type": "stat",
+      "targets": [{ "expr": "astroplane_dags_accepted", "refId": "A" }]
+    },
+    {
+      "id": 6,
+      "title": "astroplane_import_errors",
+      "type": "stat",
+      "targets": [{ "expr": "astroplane_import_errors", "refId": "A" }]
+    }
+  ]
+}

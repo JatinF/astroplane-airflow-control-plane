@@ -1,0 +1,21 @@
+{
+  "evidence_class": "SPEC",
+  "pulled": false,
+  "images": [
+    {
+      "name": "airflow",
+      "reference": "registry.local/astroplane/airflow:2.11.0",
+      "digest": "not-pulled"
+    },
+    {
+      "name": "postgres",
+      "reference": "registry.local/astroplane/postgres:16",
+      "digest": "not-pulled"
+    },
+    {
+      "name": "statsd",
+      "reference": "registry.local/astroplane/statsd:local",
+      "digest": "not-pulled"
+    }
+  ]
+}
