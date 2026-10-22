@@ -22,7 +22,8 @@ var componentOrder = []struct {
 	{name: "statsd", yamlKey: "statsd", image: "statsd"},
 }
 
-// Controller reconciles AirflowCluster objects in a local journal.
+// Controller is a reference controller. It reconciles AirflowCluster
+// objects in a local JSON journal using the standard library.
 // The mutex is the stand-in for a single-threaded work queue. Parallel
 // callers are serialized so `go test -race` can exercise the lock.
 

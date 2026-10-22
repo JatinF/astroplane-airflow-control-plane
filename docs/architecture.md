@@ -1,6 +1,6 @@
 # Architecture
 
-AstroPlane is an in-process control plane for an Airflow installation that has not been started. The reconciler, the pack scanner, the egress check, and the Airflow-shaped API run in this Python process. A Kubernetes API server, kubelet, Helm, kind, the Airflow scheduler, and a metadata database are adapter slots. Each one is `not-run`.
+AstroPlane is a reference implementation. The reference controller, the pack scanner, the egress check, and the Airflow-shaped API run in-process. The Go controller uses the standard library and a local JSON journal. A Kubernetes API server, kubelet, Helm, kind, the Airflow scheduler, and a metadata database are adapter slots. Each one is `not-run`. The CRD file has not been applied.
 
 OrchestraScale schedules DAG runs in-process with the Airflow library. AstroPlane provisions the control plane and does not execute DAG runs.
 

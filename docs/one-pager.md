@@ -1,6 +1,6 @@
-# AstroPlane one-pager
+# AstroPlane — Reference implementation
 
-AstroPlane is a local control plane for an Airflow installation that has not been started. The Go controller reconciles `AirflowCluster` objects in a JSON journal. The Python API serves the Airflow 2.11 shapes and stores its own SQLite journal. Neither process posts objects to a Kubernetes API server.
+AstroPlane is a reference controller and a local control plane for an Airflow installation that has not been started. The Go package uses the standard library and reconciles `AirflowCluster` objects in a JSON journal. The Python API serves the Airflow 2.11 shapes and stores its own SQLite journal. The CRD file has not been applied. Neither process posts objects to a Kubernetes API server.
 
 ```mermaid
 flowchart LR

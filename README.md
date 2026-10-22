@@ -1,6 +1,6 @@
-# AstroPlane
+# AstroPlane — Reference implementation
 
-Self-contained Airflow control-plane reference with a Kubernetes operator reconciler, component provisioning, an Airflow-compatible API, zero-egress installation checks, offline supply-chain packaging, and operational metrics.
+Self-contained Airflow control-plane reference with a reference controller, component provisioning, an Airflow-compatible API, zero-egress installation checks, offline supply-chain packaging, and operational metrics.
 
 Deployment decision: **NO-GO**. The reconciler plans objects in this process. It does not apply them. SchedulerJob, TriggererJob, DagProcessorJob, Postgres, kubelet, and the Kubernetes API server were not started. `components_running` stays 0.
 
@@ -42,7 +42,7 @@ Ready stays false. Planned is the admitted phase. Denied stores no deployments. 
 
 ## What the controller and API tests cover
 
-The Go module in `operator/` is a standard-library controller. `go test -race ./...` provisions an `AirflowCluster`, writes six Pending Deployments, upgrades the local image tag to release `r2`, and runs the finalizer `astroplane.example/finalizer`. A second process opens the same JSON journal and finishes a deletion that the first process only marked. `TestTwoTrimpathBuildsMatch` builds `astroplane-controller` twice with `-trimpath` and requires the same sha256. CI runs that package with `GOPROXY=off`.
+The Go module in `operator/` is a reference controller. It uses the standard library and saves `AirflowCluster` state in a local JSON journal. `go test -race ./...` provisions a cluster, writes six Pending Deployments, upgrades the local image tag to release `r2`, and runs the finalizer `astroplane.example/finalizer`. A second process opens the same journal and finishes a deletion that the first process only marked. `TestTwoTrimpathBuildsMatch` builds `astroplane-controller` twice with `-trimpath` and requires the same sha256. CI runs that package with `GOPROXY=off`.
 
 The Python API keeps the Airflow-shaped routes and adds SQLite state, `POST /v1/clusters/{id}/upgrade`, and `DELETE /v1/clusters/{id}`. `tests/test_lifecycle.py` reopens the SQLite file in a new store and finishes a deletion that was saved as `Deleting`.
 
